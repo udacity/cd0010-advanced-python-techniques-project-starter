@@ -182,7 +182,7 @@ You're making some real progress! Now that we can read the data, create `NearEar
 
 In this task, we will write this logic in a `NEOSearcher` object in `search.py`.
 
-Defined above are the four search use cases ([requirements](https://github.com/lorenanicole/neo_database#requirements))
+Defined above are the four search use cases ([requirements](https://github.com/udacity/nd303-c1-advanced-python-techniques-project-starter#requirements))
 you will eventually need to provide. To start, write a `NEOSearcher` object that can `get_objects` based on the first search requirement.
 
 1. Begin implementing your `NEOSearcher` object.
