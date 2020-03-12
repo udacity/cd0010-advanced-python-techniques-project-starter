@@ -42,13 +42,13 @@ class NEODatabase(object):
         # Where will the data be stored?
         dict_list = df.to_dict(orient="records")
         for item in dict_list: 
-            if not self.orbit_dict[item['close_approach_date_full']]:
+            if item['close_approach_date_full'] not in self.orbit_dict:
                 self.orbit_dict[item['close_approach_date_full']] = {}
-            if not self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']]:
+            if item['kilometers_per_second']+item['miss_distance_kilometers'] not in self.orbit_dict[item['close_approach_date_full']]:
                 self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']] = OrbitPath(**item)
             current_orbit = self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']]
 
-            if not self.neo_dict[item['id']]:
+            if item['id'] not in self.neo_dict:
                 self.neo_dict[item['id']] = NearEarthObject(**item)
             self.neo_dict[item['id']].update_orbits(current_orbit)
         return None

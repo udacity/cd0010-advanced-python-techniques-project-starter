@@ -1,0 +1,2 @@
+- Fixed wrong method to verify if a key is in a Dict. Tool used to locate it was the debugger from VSCode,
+and code is located in the database.py file.
