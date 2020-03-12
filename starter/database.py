@@ -1,4 +1,5 @@
 from models import OrbitPath, NearEarthObject
+import pandas as pd
 
 
 class NEODatabase(object):
@@ -16,6 +17,10 @@ class NEODatabase(object):
         """
         # TODO: What data structures will be needed to store the NearEarthObjects and OrbitPaths?
         # TODO: Add relevant instance variables for this.
+        self.filename = filename
+        self.neo_dict = {}      #by id
+        self.orbit_dict = {}        #by date
+
 
     def load_data(self, filename=None):
         """
@@ -32,7 +37,18 @@ class NEODatabase(object):
 
         filename = filename or self.filename
 
-        # TODO: Load data from csv file.
-        # TODO: Where will the data be stored?
+        # Load data from csv file.
+        df = pd.read_csv(filename)
+        # Where will the data be stored?
+        dict_list = df.to_dict(orient="records")
+        for item in dict_list: 
+            if not self.orbit_dict[item['close_approach_date_full']]:
+                self.orbit_dict[item['close_approach_date_full']] = {}
+            if not self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']]:
+                self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']] = OrbitPath(**item)
+            current_orbit = self.orbit_dict[item['close_approach_date_full']][item['kilometers_per_second']+item['miss_distance_kilometers']]
 
+            if not self.neo_dict[item['id']]:
+                self.neo_dict[item['id']] = NearEarthObject(**item)
+            self.neo_dict[item['id']].update_orbits(current_orbit)
         return None
