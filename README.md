@@ -13,7 +13,7 @@ When complete, you'll be able to inspect the properties of the near-Earth object
 - Occurs on a given date.
 - Occurs on or after a given start date.
 - Occurs on or before a given end date.
-- Approaches Earth at a distance of at least (or at most) X astrononical units.
+- Approaches Earth at a distance of at least (or at most) X astronomical units.
 - Approaches Earth at a relative velocity of at least (or at most) Y kilometers per second.
 - Has a diameter that is at least as large as (or at least as small as) Z kilometers.
 - Is marked by NASA as potentially hazardous (or not).
@@ -35,7 +35,7 @@ Along the way, you'll have to be able to:
 
 It's normal to encounter bugs along the way, so in all likelihood, you'll also gain practice with valuable debugging skills, whether interpreting stack traces, chasing down system errors, handling and raising appropriate errors, walking through code with `pdb`, checking preconditions with `assert`, or simply displaying internal state with `print`.
 
-## Understanding the Near Earth Object Close Approach Datasets
+## Understanding the Near-Earth Object Close Approach Datasets
 
 This project contains two important data sets, and our first step will be to explore and understand the data containing within these structured files.
 
