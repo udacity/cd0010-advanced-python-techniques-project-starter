@@ -12,6 +12,7 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 You'll edit this file in Tasks 2 and 3.
 """
 
+
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
 
@@ -87,7 +88,7 @@ class NEODatabase:
         If no arguments are provided, generate all known close approaches.
 
         The `CloseApproach` objects are generated in internal order, which isn't
-        guaranteed to be sorted meaninfully, although is often sorted by time.
+        guaranteed to be sorted meaningfully, although is often sorted by time.
 
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
