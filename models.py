@@ -34,7 +34,7 @@ class NearEarthObject:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, **info):
+    def __init__(self, designation = '', name = None, diameter = float('nan'), hazardous = False):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -44,10 +44,10 @@ class NearEarthObject:
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
-        self.designation = ''
-        self.name = None
-        self.diameter = float('nan')
-        self.hazardous = False
+        self.designation = designation
+        self.name = name
+        self.diameter = diameter
+        self.hazardous = hazardous
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -56,14 +56,17 @@ class NearEarthObject:
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        if self.name != None:
+            return self.name
+        else:
+            return self.designation
 
     def __str__(self):
         """Return `str(self)`."""
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A NearEarthObject ..."
+        return f"A NearEarthObject {self.fullname} has a diameter of {self.diameter: .3f} km and the hazardousness is {self.hazardous}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
