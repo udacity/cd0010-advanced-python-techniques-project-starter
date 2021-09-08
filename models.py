@@ -84,19 +84,19 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
-    # TD:: How can you, and should you, change the arguments to this constructor?
+    # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
     def __init__(self, **info):
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
         """
-        # TD:: Assign information from the arguments passed to the constructor
+        # TODO: Assign information from the arguments passed to the constructor
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
         self._designation = ''
-        self.time = None  # TD:: Use the cd_to_datetime function for this attribute.
+        self.time = None  # TODO_IGNORE:: Use the cd_to_datetime function for this attribute.
         self.distance = 0.0
         self.velocity = 0.0
 
