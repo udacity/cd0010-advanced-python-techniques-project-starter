@@ -1,0 +1,15 @@
+name: "Workflow"
+on:
+  push:
+    branches:
+      - todo-to-issue
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@master"
+      - name: "TODO to Issue"
+        uses: "moon0440/todo-to-issue-action@master"
+        id: "todo"
+        with:
+          PROJECTS_SECRET: ${{ secrets.PROJECTS_SECRET }}
