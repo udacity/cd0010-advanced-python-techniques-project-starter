@@ -1,8 +1,5 @@
 name: "Workflow"
-on:
-  push:
-    branches:
-      - todo-to-issue
+on: ["push"]
 jobs:
   build:
     runs-on: "ubuntu-latest"
