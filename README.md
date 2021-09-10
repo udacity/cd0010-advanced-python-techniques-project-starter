@@ -1044,7 +1044,7 @@ If any of the tests fail, you should fix the causes of error before beginning th
 
 ## Deliverables
 
-Upon completing this project, you'll have modified at least `models.py`, `read.py`, `database.py`, `filters.py`, and `write.py`. If you went above-and-beyond with any Stand Out Suggestions, include your changes alongside an EXTENSIONS.md file describing your changes so that the reviewers can understand what you've done.
+Upon completing this project, you'll have modified at least `database.py`, `extract.py`, `filters.py`, `models.py`, and `write.py`. If you went above-and-beyond with any Stand Out Suggestions, include your changes alongside an EXTENSIONS.md file describing your changes so that the reviewers can understand what you've done.
 
 Over the course of this project (specifically, in Task 4), you've likely created several output files. You should remove these files before submitting your project.
 

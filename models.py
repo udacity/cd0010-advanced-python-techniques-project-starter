@@ -67,8 +67,8 @@ class NearEarthObject:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return (f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, "
-                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})")
+        return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
+               f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
 
 
 class CloseApproach:
@@ -80,7 +80,7 @@ class CloseApproach:
     in kilometers per second.
 
     A `CloseApproach` also maintains a reference to its `NearEarthObject` -
-    initally, this information (the NEO's primary designation) is saved in a
+    initially, this information (the NEO's primary designation) is saved in a
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
@@ -130,5 +130,5 @@ class CloseApproach:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
-                f"velocity={self.velocity:.2f}, neo={self.neo!r})")
+        return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
+               f"velocity={self.velocity:.2f}, neo={self.neo!r})"
