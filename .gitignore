@@ -1,2 +1,5 @@
 .pytest_chache
 .ipynb_checkpoints
+.idea
+__pycache__
+tests/__pycache
