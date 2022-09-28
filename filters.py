@@ -16,6 +16,9 @@ iterator.
 
 You'll edit this file in Tasks 3a and 3c.
 """
+from itertools import islice
+from typing import Any, Generator
+
 import operator
 
 
@@ -38,6 +41,7 @@ class AttributeFilter:
     Concrete subclasses can override the `get` classmethod to provide custom
     behavior to fetch a desired attribute from the given `CloseApproach`.
     """
+
     def __init__(self, op, value):
         """Construct a new `AttributeFilter` from an binary predicate and a reference value.
 
@@ -70,6 +74,41 @@ class AttributeFilter:
 
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
+
+
+class VelocityFilter(AttributeFilter):
+
+    @classmethod
+    def get(cls, approach):
+        return approach.velocity
+
+
+class DateFilter(AttributeFilter):
+
+    @classmethod
+    def get(cls, approach):
+        return approach.time.date()
+
+
+class DistanceFilter(AttributeFilter):
+
+    @classmethod
+    def get(cls, approach):
+        return approach.distance
+
+
+class DiameterFilter(AttributeFilter):
+
+    @classmethod
+    def get(cls, approach):
+        return approach.neo.diameter
+
+
+class HazFilter(AttributeFilter):
+
+    @classmethod
+    def get(cls, approach):
+        return approach.neo.hazardous
 
 
 def create_filters(
@@ -109,10 +148,41 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    filters = []
+    if date is not None:
+        filters.append(DateFilter(operator.eq, date))
+
+    if start_date is not None:
+        filters.append(DateFilter(operator.ge, start_date))
+
+    if end_date is not None:
+        filters.append(DateFilter(operator.le, end_date))
+
+    if distance_min is not None:
+        filters.append(DistanceFilter(operator.ge, distance_min))
+
+    if distance_max is not None:
+        filters.append(DistanceFilter(operator.le, distance_max))
+
+    if velocity_min is not None:
+        filters.append(VelocityFilter(operator.ge, velocity_min))
+
+    if velocity_max is not None:
+        filters.append(VelocityFilter(operator.le, velocity_max))
+
+    if diameter_min is not None:
+        filters.append(DiameterFilter(operator.ge, diameter_min))
+
+    if diameter_max is not None:
+        filters.append(DiameterFilter(operator.le, diameter_max))
+
+    if hazardous is not None:
+        filters.append(HazFilter(operator.eq, hazardous))
+
+    return filters
 
 
-def limit(iterator, n=None):
+def limit(iterator, n=None) -> Generator[Any, None, None]:
     """Produce a limited stream of values from an iterator.
 
     If `n` is 0 or None, don't limit the iterator at all.
@@ -122,4 +192,6 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+    if (n is None) or (n == 0):
+        n = None
+    return islice(iterator, n)
