@@ -52,7 +52,7 @@ class NEODatabase:
 
         # TODO: What additional auxiliary data structures will be useful?
 
-        # TODO: Link together the NEOs and their close approaches.
+        # TODO: Link. together the NEOs and their close approaches.
 
         for approach in self.approaches:
             if approach._designation in self._neosbydesignationdict.keys():
