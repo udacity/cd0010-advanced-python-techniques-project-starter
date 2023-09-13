@@ -35,7 +35,7 @@ class NearEarthObject:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation, name, diameter = float('nan'), hazardous ='N'):
+    def __init__(self, designation, name, diameter = float('nan'), hazardous ='False'):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -57,10 +57,7 @@ class NearEarthObject:
         else:
             self.diameter = float(diameter)
         self.hazardous = hazardous    
-        if hazardous == 'Y':
-            self.hazardous = True
-        else:
-            self.hazardous = False
+        self.hazardous = True if hazardous == 'Y' else False
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -70,11 +67,9 @@ class NearEarthObject:
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        if self.name == None:
-            self.full_name = f"{self.designation}"
-        else:
-            self.full_name = f"{self.designation}{self.name}"
-        return self.fullname
+        if self.name:
+            return f"{self.designation} ({self.name})"
+        return f"{self.designation}"
 
 
     def __str__(self):
@@ -82,7 +77,7 @@ class NearEarthObject:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A NearEarthObject {self.name} has a diameter of {self.diameter:.3f} km" \
+        return f"NEO '{self.fullname}' has a diameter of {self.diameter:.3f} km" \
                f" and {'is' if self.hazardous else 'is not'} potentially hazardous."
 
     def __repr__(self):
@@ -93,10 +88,10 @@ class NearEarthObject:
 
 class CloseApproach:
     
-    def __init__(self, _designation, time=cd_to_datetime, distance = float('nan'), velocity = float('nan')):
+    def __init__(self, _designation, time, distance = float('nan'), velocity = float('nan')):
     
         self._designation = _designation
-        self.time = time  # TODO: Use the cd_to_datetime function for this attribute.
+        self.time = cd_to_datetime(time)  # TODO: Use the cd_to_datetime function for this attribute.
         self.distance = distance
         if not distance:
             self.distance = float('nan')
@@ -112,18 +107,18 @@ class CloseApproach:
     @property
     def time_str(self):
 
-        return f"datetime_to_str={self.time}, designation={self._designation}, name={self.neo}"
+        return f"{self.time}"
 
   
     def __str__(self):
         """Return `str(self)`."""
-        return f"A Close Approach at {self.time_str!r} by {self.neo!r} approaches at a distance of" \
-               f"{self.distance:.2f} with a vecolity of {self.velocity:.2f} km/s."
+        return (f"On {self.time_str!r}, NEO '{self.neo.fullname}' approaches Earth at a distance of" \
+                f" of {self.distance:.2f} au with a velocity of {self.velocity:.2f} km/s.")
 
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
-               f"velocity={self.velocity:.2f}, neo={self.neo!r})"
+        return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}," \
+               f"velocity={self.velocity:.2f}, neo={self.neo!r})")
     
 

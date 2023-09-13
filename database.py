@@ -21,7 +21,7 @@ class NEODatabase:
     help fetch NEOs by primary designation or by name and to help speed up
     querying for close approaches that match criteria.
     """
-    def __init__(self, neos=load_neos, approaches=load_approaches):
+    def __init__(self, neos, approaches):
 
         """Create a new `NEODatabase`.
 
@@ -43,22 +43,33 @@ class NEODatabase:
         self.neos = neos
         self.approaches = approaches
 
-        self._neobynamedict = dict((neo.name,neo) 
-                                      for neo in self.neos)
-        
-        self._neosbydesignationdict = dict((neo.designation, neo)
-                                            for neo in self.neos)
+        self._neosbynamedict = dict()
+
+        self._neosbydesignationdict = dict()
+
+        for neo in self.neos:
+            self._neosbydesignationdict[neo.designation] = neo
+
+            if neo.name:
+                self._neosbynamedict[neo.name] = neo
+
+        for approach in self.approaches:
+            neo = self._neosbydesignationdict[approach._designation]
+            approach.neo = neo
+            neo.approaches.append(approach)
+
+
 
 
         # TODO: What additional auxiliary data structures will be useful?
 
         # TODO: Link. together the NEOs and their close approaches.
 
-        for approach in self.approaches:
-            if approach._designation in self._neosbydesignationdict.keys():
-                self._neosbydesignationdict[approach._designation] = approach.neo
-                self._neosbydesignationdict[approach._designation]
-                approaches.append(approach)
+        # for approach in self.approaches:
+         #   if approach._designation in self._neosbydesignationdict.keys():
+         #       self._neosbydesignationdict[approach._designation] = approach.neo
+          #      self._neosbydesignationdict[approach._designation]
+           #     approaches.append(approach)
 
 
 
@@ -97,8 +108,8 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        if name in self._neobynamedict.keys():
-            return self._neobynamedict[name]
+        if name in self._neosbynamedict.keys():
+            return self._neosbynamedict[name]
     
         return None
 
@@ -117,5 +128,12 @@ class NEODatabase:
         :return: A stream of matching `CloseApproach` objects.
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
-        for approach in self._approaches:
-            yield approach
+        
+        for approach in self.approaches:
+            flag = True
+            for filter in filters:
+                if not filter(approach):
+                    flag = False
+                    break
+            if flag:
+                yield approach
