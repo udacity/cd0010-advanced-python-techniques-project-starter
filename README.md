@@ -4,6 +4,11 @@ In this project, you'll use Python - and the skills we've developed throughout t
 
 ## Overview
 
+### Author:
+
+Name: Phat Ha
+Date:24/02/2024
+
 At a high-level, you'll create Python code that implements a command-line tool to inspect and query a dataset of NEOs and their close approaches to Earth.
 
 Concretely, you'll have to read data from both a CSV file and a JSON file, convert that data into structured Python objects, perform filtering operations on the data, limit the size of the result set, and write the results to a file in a structured format, such as CSV or JSON.
@@ -134,37 +139,37 @@ The top-level JSON payload is a dictionary with keys "signature", "count", "fiel
 
 What do each of the fields mean? [NASA's API documentation](https://ssd-api.jpl.nasa.gov/doc/cad.html) provides the answer:
 
-> * des - primary designation of the asteroid or comet (e.g., 443, 2000 SG344)
-> * orbit_id - orbit ID
-> * jd - time of close-approach (JD Ephemeris Time)
-> * cd - time of close-approach (formatted calendar date/time, in UTC)
-> * dist - nominal approach distance (au)
-> * dist_min - minimum (3-sigma) approach distance (au)
-> * dist_max - maximum (3-sigma) approach distance (au)
-> * v_rel - velocity relative to the approach body at close approach (km/s)
-> * v_inf - velocity relative to a massless body (km/s)
-> * t_sigma_f - 3-sigma uncertainty in the time of close-approach (formatted in days, hours, and minutes; days are not included if zero; example "13:02" is 13 hours 2 minutes; example "2_09:08" is 2 days 9 hours 8 minutes)
-> * h - absolute magnitude H (mag)
+> - des - primary designation of the asteroid or comet (e.g., 443, 2000 SG344)
+> - orbit_id - orbit ID
+> - jd - time of close-approach (JD Ephemeris Time)
+> - cd - time of close-approach (formatted calendar date/time, in UTC)
+> - dist - nominal approach distance (au)
+> - dist_min - minimum (3-sigma) approach distance (au)
+> - dist_max - maximum (3-sigma) approach distance (au)
+> - v_rel - velocity relative to the approach body at close approach (km/s)
+> - v_inf - velocity relative to a massless body (km/s)
+> - t_sigma_f - 3-sigma uncertainty in the time of close-approach (formatted in days, hours, and minutes; days are not included if zero; example "13:02" is 13 hours 2 minutes; example "2_09:08" is 2 days 9 hours 8 minutes)
+> - h - absolute magnitude H (mag)
 
 With this in mind, we can interpret that the first close approach contained in the dataset is:
 
-* an asteroid or comet with primary designation "170903"
-* an orbit ID of 105
-* a close approach time of 2415020.507669610 (in JD Ephemeris time) or 1900-Jan-01 00:11 (in a normal format)
-* an approach distance of 0.0921795123769547 astronomical units (with 3-sigma bounds of (0.0912006569517418au, 0.0931589328621254au))
-* an approach velocity of 16.7523040362574 km/s (relative to Earth) or 16.7505784933163 km/s (relative to a massless body)
-* 3-sigma uncertainty in the time of close approach of 1 hour
-* an absolute magnitude of 18.1
+- an asteroid or comet with primary designation "170903"
+- an orbit ID of 105
+- a close approach time of 2415020.507669610 (in JD Ephemeris time) or 1900-Jan-01 00:11 (in a normal format)
+- an approach distance of 0.0921795123769547 astronomical units (with 3-sigma bounds of (0.0912006569517418au, 0.0931589328621254au))
+- an approach velocity of 16.7523040362574 km/s (relative to Earth) or 16.7505784933163 km/s (relative to a massless body)
+- 3-sigma uncertainty in the time of close approach of 1 hour
+- an absolute magnitude of 18.1
 
 The second close approach contained in the dataset is:
 
-* an asteroid or comet with primary designation "2005 OE3"
-* an orbit ID of 52
-* a close approach time of 2415020.606013490 (in JD Ephemeris time) or 1900-Jan-01 02:33 (in a normal format)
-* an approach distance of 0.414975519685102 astronomical units (with 3-sigma bounds of (0.414968315685577au, 0.414982724454678au))
-* an approach velocity of 17.918395877175 km/s (relative to Earth) or 17.9180375373357 km/s (relative to a massless body)
-* 3-sigma uncertainty in the time of close approach of less than 1 minute.
-* an absolute magnitude of 20.3
+- an asteroid or comet with primary designation "2005 OE3"
+- an orbit ID of 52
+- a close approach time of 2415020.606013490 (in JD Ephemeris time) or 1900-Jan-01 02:33 (in a normal format)
+- an approach distance of 0.414975519685102 astronomical units (with 3-sigma bounds of (0.414968315685577au, 0.414982724454678au))
+- an approach velocity of 17.918395877175 km/s (relative to Earth) or 17.9180375373357 km/s (relative to a massless body)
+- 3-sigma uncertainty in the time of close approach of less than 1 minute.
+- an absolute magnitude of 20.3
 
 As before, this data set contains more information than we need. For this project, we'll make use of the `des`, `cd`, `dist`, and `v_rel` measurements - although the other attributes can be useful if you wish to extend the project! Fortunately, each entry has well-formatted data for each of these attributes.
 
