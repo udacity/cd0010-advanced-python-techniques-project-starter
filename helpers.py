@@ -11,6 +11,8 @@ representations display seconds, but NASA's data (and our datetimes!) don't
 provide that level of resolution, so the output format also will not.
 """
 import datetime
+import os
+import pathlib
 
 
 def cd_to_datetime(calendar_date):
@@ -42,3 +44,18 @@ def datetime_to_str(dt):
     :return: That datetime, as a human-readable string without seconds.
     """
     return datetime.datetime.strftime(dt, "%Y-%m-%d %H:%M")
+
+
+def to_abs_path(filename: str) -> str:
+    """Convert a filename into an absolute path using the os and pathlib modules
+
+    Args:
+        filename (str): a file in a system.
+
+    Returns:
+        str: An absolute path of a file in a system.
+    """
+    return os.path.join(
+        pathlib.Path(__file__).parent.absolute(),
+        filename
+    )
