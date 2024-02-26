@@ -11,6 +11,7 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 
 You'll edit this file in Tasks 2 and 3.
 """
+from models import NearEarthObject, CloseApproach
 
 
 class NEODatabase:
@@ -21,7 +22,8 @@ class NEODatabase:
     help fetch NEOs by primary designation or by name and to help speed up
     querying for close approaches that match criteria.
     """
-    def __init__(self, neos, approaches):
+
+    def __init__(self, neos: list[NearEarthObject], approaches: list[CloseApproach]):
         """Create a new `NEODatabase`.
 
         As a precondition, this constructor assumes that the collections of NEOs
@@ -45,8 +47,15 @@ class NEODatabase:
         # TODO: What additional auxiliary data structures will be useful?
 
         # TODO: Link together the NEOs and their close approaches.
+        # for neo in neos:
+        #     neo.approaches = []
+        #     for approach in approaches:
+        #         if neo.designation == approach._designation:
+        #             approach.neo = neo
+        #             neo.approaches.append(approach)
+        self.populate_relationships_single_pass(self._neos, self._approaches)
 
-    def get_neo_by_designation(self, designation):
+    def get_neo_by_designation(self, designation: str) -> NearEarthObject | None:
         """Find and return an NEO by its primary designation.
 
         If no match is found, return `None` instead.
@@ -59,10 +68,12 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        # TODO: Fetch an NEO by its primary designation.
+        for neo in self._neos:
+            if designation.strip().lower() == neo.designation.strip().lower():
+                return neo
         return None
 
-    def get_neo_by_name(self, name):
+    def get_neo_by_name(self, name: str) -> NearEarthObject | None:
         """Find and return an NEO by its name.
 
         If no match is found, return `None` instead.
@@ -76,10 +87,15 @@ class NEODatabase:
         :param name: The name, as a string, of the NEO to search for.
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
-        # TODO: Fetch an NEO by its name.
+        for neo in self._neos:
+            if neo.name is None:
+                continue
+
+            if name.strip().lower() == neo.name.strip().lower():
+                return neo
         return None
 
-    def query(self, filters=()):
+    def query(self, filters: set[str] = ()) -> CloseApproach:
         """Query close approaches to generate those that match a collection of filters.
 
         This generates a stream of `CloseApproach` objects that match all of the
@@ -93,6 +109,26 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
         for approach in self._approaches:
+
             yield approach
+
+    def populate_relationships_single_pass(self, neos: list[NearEarthObject], close_approaches: list[CloseApproach]):
+        # Combine objects from both lists into a single list with an additional flag
+        combined_list = [
+            (obj, True) if isinstance(obj, A)
+            else (obj, False) for obj in neos + close_approaches
+        ]
+
+        # Iterate through the combined list
+        for obj, is_a_close_approach in combined_list:
+            if is_a_close_approach:
+                # A object: update list_of_b
+                for ca in close_approaches:
+                    if ca._designation == obj.designation:
+                        ca.neo = obj
+                        obj.approaches.append(ca)
+                else:
+                    # B object: update object_a (using the flag to identify B objects)
+                    if obj.neo in a_dict:
+                        obj.neo = a_dict[obj.designation]
