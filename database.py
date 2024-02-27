@@ -44,16 +44,27 @@ class NEODatabase:
         self._neos = neos
         self._approaches = approaches
 
-        # TODO: What additional auxiliary data structures will be useful?
+        # Create a lookup table
+        self._designation_to_index: dict[str, int] = {}
 
-        # TODO: Link together the NEOs and their close approaches.
-        # for neo in neos:
-        #     neo.approaches = []
-        #     for approach in approaches:
-        #         if neo.designation == approach._designation:
-        #             approach.neo = neo
-        #             neo.approaches.append(approach)
-        self.populate_relationships_single_pass(self._neos, self._approaches)
+        for i, neo in enumerate(self._neos):
+            self._designation_to_index[neo.designation] = i
+
+        for approach in self._approaches:
+            if approach.neo is None:
+                if approach._designation in self._designation_to_index:
+                    # Get a neo by getting an index in the lookup table above through the approach's designation and pass it to the _neos list.
+                    approach.neo = self._neos[self._designation_to_index[approach._designation]]
+                    # Append the approach above to the neo's approaches' list.
+                    approach.neo.approaches.append(approach)
+
+        # More dicts to help speed up the inspect and query time.
+        self._designation_to_neo = {
+            neo.designation.lower(): neo for neo in self._neos
+        }
+        self._name_to_neo = {
+            neo.name.lower(): neo for neo in self._neos if neo.name is not None
+        }
 
     def get_neo_by_designation(self, designation: str) -> NearEarthObject | None:
         """Find and return an NEO by its primary designation.
@@ -68,10 +79,7 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        for neo in self._neos:
-            if designation.strip().lower() == neo.designation.strip().lower():
-                return neo
-        return None
+        return self._designation_to_neo.get(designation.strip().lower(), None)
 
     def get_neo_by_name(self, name: str) -> NearEarthObject | None:
         """Find and return an NEO by its name.
@@ -87,13 +95,7 @@ class NEODatabase:
         :param name: The name, as a string, of the NEO to search for.
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
-        for neo in self._neos:
-            if neo.name is None:
-                continue
-
-            if name.strip().lower() == neo.name.strip().lower():
-                return neo
-        return None
+        return self._name_to_neo.get(name.strip().lower(), None)
 
     def query(self, filters: set[str] = ()) -> CloseApproach:
         """Query close approaches to generate those that match a collection of filters.
@@ -112,23 +114,3 @@ class NEODatabase:
         for approach in self._approaches:
 
             yield approach
-
-    def populate_relationships_single_pass(self, neos: list[NearEarthObject], close_approaches: list[CloseApproach]):
-        # Combine objects from both lists into a single list with an additional flag
-        combined_list = [
-            (obj, True) if isinstance(obj, A)
-            else (obj, False) for obj in neos + close_approaches
-        ]
-
-        # Iterate through the combined list
-        for obj, is_a_close_approach in combined_list:
-            if is_a_close_approach:
-                # A object: update list_of_b
-                for ca in close_approaches:
-                    if ca._designation == obj.designation:
-                        ca.neo = obj
-                        obj.approaches.append(ca)
-                else:
-                    # B object: update object_a (using the flag to identify B objects)
-                    if obj.neo in a_dict:
-                        obj.neo = a_dict[obj.designation]
