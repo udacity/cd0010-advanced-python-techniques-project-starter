@@ -34,8 +34,6 @@ class NearEarthObject:
     """
 
     def __init__(self, designation: str, name: str, diameter: str, hazardous: bool = False, close_approaches: list = None):
-        if close_approaches is None:
-            close_approaches = []
         """Create a new `NearEarthObject`.
 
         Args:
@@ -51,7 +49,8 @@ class NearEarthObject:
         self.hazardous = hazardous
 
         # Create an empty initial collection of linked approaches.
-        self.approaches = [] if close_approaches is None else close_approaches
+        self.approaches: list[CloseApproach] = [
+        ] if close_approaches is None else close_approaches
 
     @property
     def fullname(self):
@@ -93,16 +92,14 @@ class CloseApproach:
             velocity (str): The relative approach velocity in km/s.
             neo (NearEarthObject, optional): A near-Earth object. Defaults to None.
         """
-        self._designation = designation
+        self._designation = None if designation == '' else designation
         self.time = cd_to_datetime(time)
         self.distance = float(distance)
         self.velocity = float(velocity)
 
         # Create an attribute for the referenced NEO, originally None.
-        if neo is None:
-            _designation = designation
-        else:
-            self.neo = neo
+
+        self.neo = neo
 
     @property
     def time_str(self) -> str:
