@@ -11,10 +11,6 @@ extension determines which of these functions is used.
 You'll edit this file in Part 4.
 """
 
-
-
-"""Write a stream of close approaches to CSV or to JSON."""
-
 import csv
 import json
 from pathlib import Path
@@ -26,6 +22,15 @@ from models import CloseApproach
 def write_to_csv(results: Iterable[CloseApproach], filename: Path) -> None:
     """Write an iterable of CloseApproach objects to a CSV file.
 
+    Parameters
+    ----------
+    results : Iterable[CloseApproach]
+        An iterable of CloseApproach objects to write.
+    filename : Path
+        The path to the output CSV file.
+
+    Notes
+    -----
     Output columns:
       datetime_utc, distance_au, velocity_km_s, designation, name, diameter_km, potentially_hazardous
     """
@@ -48,6 +53,15 @@ def write_to_csv(results: Iterable[CloseApproach], filename: Path) -> None:
 def write_to_json(results: Iterable[CloseApproach], filename: Path) -> None:
     """Write an iterable of CloseApproach objects to a JSON file.
 
+    Parameters
+    ----------
+    results : Iterable[CloseApproach]
+        An iterable of CloseApproach objects to write.
+    filename : Path
+        The path to the output JSON file.
+
+    Notes
+    -----
     Output structure: a list of dicts; each dict has approach fields and an 'neo' sub-dict.
     """
     payload = [ca.serialize() for ca in results]

@@ -35,24 +35,59 @@ from models import CloseApproach
 
 
 class UnsupportedCriterionError(NotImplementedError):
-    """Raised when a filter criterion is unsupported."""
+    """Exception raised when a filter criterion is unsupported."""
 
 
 class AttributeFilter:
     """A general superclass for filters on comparable attributes."""
 
     def __init__(self, op: Callable, value) -> None:
-        """Construct an AttributeFilter from a binary predicate and a reference value."""
+        """Construct an AttributeFilter from a binary predicate and a reference value.
+
+        Parameters
+        ----------
+        op : Callable
+            A binary comparison operator (e.g., operator.eq, operator.ge).
+        value : Any
+            The reference value to compare against.
+        """
         self.op = op
         self.value = value
 
     def __call__(self, approach: CloseApproach) -> bool:
-        """Return whether `approach` satisfies this filter."""
+        """Return whether the approach satisfies this filter.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach to evaluate.
+
+        Returns
+        -------
+        bool
+            True if the approach satisfies the filter criterion.
+        """
         return self.op(self.get(approach), self.value)
 
     @classmethod
     def get(cls, approach: CloseApproach):
-        """Get an attribute of interest from a close approach."""
+        """Get an attribute of interest from a close approach.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach from which to extract an attribute.
+
+        Returns
+        -------
+        Any
+            The attribute value to be compared.
+
+        Raises
+        ------
+        UnsupportedCriterionError
+            This base implementation always raises this error.
+        """
         raise UnsupportedCriterionError
 
     def __repr__(self) -> str:
@@ -62,44 +97,142 @@ class AttributeFilter:
 # ---- Concrete filters ----
 
 class DateFilter(AttributeFilter):
+    """Filter close approaches by exact date."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the date from the approach's time.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        date or None
+            The date of the approach, or None if time is missing.
+        """
         return approach.time.date() if approach.time else None
 
 
 class StartDateFilter(AttributeFilter):
+    """Filter close approaches by start date (inclusive)."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the date from the approach's time.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        date or None
+            The date of the approach, or None if time is missing.
+        """
         return approach.time.date() if approach.time else None
 
 
 class EndDateFilter(AttributeFilter):
+    """Filter close approaches by end date (inclusive)."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the date from the approach's time.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        date or None
+            The date of the approach, or None if time is missing.
+        """
         return approach.time.date() if approach.time else None
 
 
 class DistanceFilter(AttributeFilter):
+    """Filter close approaches by distance."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the distance from the approach.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        float
+            The distance in astronomical units.
+        """
         return approach.distance
 
 
 class VelocityFilter(AttributeFilter):
+    """Filter close approaches by velocity."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the velocity from the approach.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        float
+            The velocity in km/s.
+        """
         return approach.velocity
 
 
 class DiameterFilter(AttributeFilter):
+    """Filter close approaches by NEO diameter."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the diameter from the approach's NEO.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        float
+            The NEO's diameter in km, or NaN if unknown or NEO is missing.
+        """
         return approach.neo.diameter if approach.neo else float('nan')
 
 
 class HazardousFilter(AttributeFilter):
+    """Filter close approaches by NEO hazardous status."""
+
     @classmethod
     def get(cls, approach: CloseApproach):
+        """Extract the hazardous flag from the approach's NEO.
+
+        Parameters
+        ----------
+        approach : CloseApproach
+            The close approach.
+
+        Returns
+        -------
+        bool
+            True if the NEO is potentially hazardous, False otherwise.
+        """
         return approach.neo.hazardous if approach.neo else False
 
 
@@ -111,6 +244,29 @@ def create_filters(
     hazardous=None
 ) -> Sequence[AttributeFilter]:
     """Create a collection of filters from user-specified criteria.
+
+    Parameters
+    ----------
+    date : date, optional
+        Filter by exact date.
+    start_date : date, optional
+        Filter by start date (inclusive).
+    end_date : date, optional
+        Filter by end date (inclusive).
+    distance_min : float, optional
+        Minimum distance in AU.
+    distance_max : float, optional
+        Maximum distance in AU.
+    velocity_min : float, optional
+        Minimum velocity in km/s.
+    velocity_max : float, optional
+        Maximum velocity in km/s.
+    diameter_min : float, optional
+        Minimum diameter in km.
+    diameter_max : float, optional
+        Maximum diameter in km.
+    hazardous : bool, optional
+        Filter by potentially hazardous status.
 
     Returns
     -------
@@ -150,7 +306,21 @@ def create_filters(
 def limit(iterator: Iterable, n: Optional[int] = None) -> Iterator:
     """Produce a limited stream of values from an iterator.
 
-    If `n` is 0 or None, don't limit the iterator at all.
+    Parameters
+    ----------
+    iterator : Iterable
+        The source iterator to limit.
+    n : Optional[int], optional
+        Maximum number of items to yield. If 0 or None, no limit is applied.
+
+    Yields
+    ------
+    Any
+        Items from the iterator, up to n items.
+
+    Notes
+    -----
+    If n is 0 or None, don't limit the iterator at all.
     """
     if not n:
         # No limit: pass through

@@ -61,11 +61,33 @@ class NEODatabase:
                 neo.approaches.append(app)
 
     def get_neo_by_designation(self, designation: str) -> Optional[NearEarthObject]:
-        """Find and return an NEO by its primary designation, else None."""
+        """Find and return an NEO by its primary designation.
+
+        Parameters
+        ----------
+        designation : str
+            The primary designation to search for.
+
+        Returns
+        -------
+        Optional[NearEarthObject]
+            The NEO with the given designation, or None if not found.
+        """
         return self._by_des.get(designation)
 
     def get_neo_by_name(self, name: str) -> Optional[NearEarthObject]:
-        """Find and return an NEO by its name, else None."""
+        """Find and return an NEO by its name.
+
+        Parameters
+        ----------
+        name : str
+            The name to search for.
+
+        Returns
+        -------
+        Optional[NearEarthObject]
+            The NEO with the given name, or None if not found.
+        """
         return self._by_name.get(name)
 
     def query(self, filters: Sequence) -> Iterator[CloseApproach]:
