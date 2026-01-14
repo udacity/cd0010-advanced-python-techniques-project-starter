@@ -10,36 +10,60 @@ extension determines which of these functions is used.
 
 You'll edit this file in Part 4.
 """
+
 import csv
 import json
+from pathlib import Path
+from typing import Iterable
+
+from models import CloseApproach
 
 
-def write_to_csv(results, filename):
-    """Write an iterable of `CloseApproach` objects to a CSV file.
+def write_to_csv(results: Iterable[CloseApproach], filename: Path) -> None:
+    """Write an iterable of CloseApproach objects to a CSV file.
 
-    The precise output specification is in `README.md`. Roughly, each output row
-    corresponds to the information in a single close approach from the `results`
-    stream and its associated near-Earth object.
+    Parameters
+    ----------
+    results : Iterable[CloseApproach]
+        An iterable of CloseApproach objects to write.
+    filename : Path
+        The path to the output CSV file.
 
-    :param results: An iterable of `CloseApproach` objects.
-    :param filename: A Path-like object pointing to where the data should be saved.
+    Notes
+    -----
+    Output columns:
+      datetime_utc, distance_au, velocity_km_s, designation, name, diameter_km, potentially_hazardous
     """
     fieldnames = (
-        'datetime_utc', 'distance_au', 'velocity_km_s',
-        'designation', 'name', 'diameter_km', 'potentially_hazardous'
+        "datetime_utc",
+        "distance_au",
+        "velocity_km_s",
+        "designation",
+        "name",
+        "diameter_km",
+        "potentially_hazardous",
     )
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
+    with open(filename, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for ca in results:
+            writer.writerow(ca.to_csv_row())
 
 
-def write_to_json(results, filename):
-    """Write an iterable of `CloseApproach` objects to a JSON file.
+def write_to_json(results: Iterable[CloseApproach], filename: Path) -> None:
+    """Write an iterable of CloseApproach objects to a JSON file.
 
-    The precise output specification is in `README.md`. Roughly, the output is a
-    list containing dictionaries, each mapping `CloseApproach` attributes to
-    their values and the 'neo' key mapping to a dictionary of the associated
-    NEO's attributes.
+    Parameters
+    ----------
+    results : Iterable[CloseApproach]
+        An iterable of CloseApproach objects to write.
+    filename : Path
+        The path to the output JSON file.
 
-    :param results: An iterable of `CloseApproach` objects.
-    :param filename: A Path-like object pointing to where the data should be saved.
+    Notes
+    -----
+    Output structure: a list of dicts; each dict has approach fields and an 'neo' sub-dict.
     """
-    # TODO: Write the results to a JSON file, following the specification in the instructions.
+    payload = [ca.serialize() for ca in results]
+    with open(filename, mode="w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
