@@ -65,7 +65,6 @@ class NearEarthObject:
 
         Notes
         -----
-        
         - Empty or missing `name` becomes None (we default to '' to safely call `.strip()`).
         - Unknown or invalid `diameter` becomes `float('nan')`.
         - `pha` is 'Y' or 'N'; coerced to bool (True only for 'Y').
@@ -74,15 +73,12 @@ class NearEarthObject:
         # Primary designation: always present in dataset
         self.designation: str = (info.get('pdes') or info.get('designation') or '').strip()
 
-        
-        
         # Name may be empty or None in the dataset
         name_str = (info.get('name') or '').strip()
         # The 'name' field may be missing, None, or whitespace in source data.
         # Normalize to None when empty, and strip surrounding whitespace otherwise.
         # Avoid calling .strip() on None by defaulting to ''.
         self.name: Optional[str] = name_str or None
-
 
         # Diameter (km): may be missing or non-numeric -> NaN
         raw_diameter = info.get('diameter', '')
@@ -197,7 +193,6 @@ class CloseApproach:
             "potentially_hazardous": (neo.hazardous if neo else False),
         }
 
-
     def serialize(self) -> Dict[str, Any]:
         """Return a nested dict ready for JSON export.
 
@@ -227,4 +222,3 @@ class CloseApproach:
             "velocity_km_s": self.velocity,
             "neo": (neo.serialize() if neo else {"designation": self._designation}),
         }
-
